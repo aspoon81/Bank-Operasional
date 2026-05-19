@@ -1,0 +1,1224 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bank Operasional Dashboard</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0b0f1a;--bg3:#1a2235;--card:#161d2e;--card2:#1e2840;--border:#2a3550;--border2:#374166;--text:#e8edf5;--text2:#94a3b8;--text3:#64748b;--accent:#3b82f6;--accent2:#6366f1;--green:#10b981;--red:#ef4444;--yellow:#f59e0b;--orange:#f97316;--glow:0 0 40px rgba(59,130,246,0.12);}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
+header{background:linear-gradient(135deg,#0f172a 0%,#1e293b 100%);border-bottom:1px solid var(--border);padding:0 32px;position:sticky;top:0;z-index:100;box-shadow:0 4px 24px rgba(0,0,0,.4);}
+.hi{max-width:1600px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:64px;gap:16px;}
+.logo{display:flex;align-items:center;gap:12px;}
+.logo-icon{width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,#3b82f6,#6366f1);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:800;color:#fff;box-shadow:0 0 16px rgba(99,102,241,.4);}
+.logo-text{font-size:15px;font-weight:700;}
+.logo-sub{font-size:11px;color:var(--text2);font-weight:400;}
+.hr{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+.sb{display:flex;align-items:center;gap:8px;background:var(--card2);border:1px solid var(--border);border-radius:8px;padding:7px 14px;transition:.2s;}
+.sb:focus-within{border-color:var(--accent);box-shadow:0 0 0 3px rgba(59,130,246,.15);}
+.sb input{background:none;border:none;outline:none;color:var(--text);font-size:13px;width:180px;font-family:'Plus Jakarta Sans',sans-serif;}
+.sb input::placeholder{color:var(--text3);}
+.fs{background:var(--card2);border:1px solid var(--border);color:var(--text);padding:7px 10px;border-radius:8px;font-size:12px;font-family:'Plus Jakarta Sans',sans-serif;cursor:pointer;outline:none;}
+.fs:focus{border-color:var(--accent);}
+main{max-width:1600px;margin:0 auto;padding:24px 32px;}
+.kgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(185px,1fr));gap:14px;margin-bottom:22px;}
+.kcard{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:18px 20px;position:relative;overflow:hidden;transition:.2s;}
+.kcard::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--ac,var(--accent));border-radius:14px 14px 0 0;}
+.kcard:hover{transform:translateY(-2px);box-shadow:var(--glow);border-color:var(--border2);}
+.kl{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--text2);font-weight:600;margin-bottom:8px;}
+.kv{font-size:22px;font-weight:800;line-height:1;margin-bottom:4px;font-family:'DM Mono',monospace;}
+.ks{font-size:11px;color:var(--text3);}
+.st{font-size:14px;font-weight:700;display:flex;align-items:center;gap:8px;}
+.st::before{content:'';width:4px;height:16px;background:var(--accent);border-radius:2px;display:inline-block;}
+.strip{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:22px;}
+.chip{display:flex;align-items:center;gap:8px;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:9px 14px;font-size:12px;font-weight:600;}
+.dot{width:8px;height:8px;border-radius:50%;}
+.da{background:var(--green);box-shadow:0 0 6px var(--green);}
+.di{background:var(--yellow);box-shadow:0 0 6px var(--yellow);}
+.db{background:var(--red);box-shadow:0 0 6px var(--red);}
+.dn{background:var(--text3);}
+.sc{font-size:18px;font-weight:800;margin-left:4px;}
+.pgrid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:22px;}
+.cc{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px;}
+.tc{background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:22px;}
+.th{padding:14px 20px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);flex-wrap:wrap;gap:10px;}
+.tw{overflow-x:auto;}
+table{width:100%;border-collapse:collapse;font-size:12.5px;}
+thead tr{background:var(--bg3);}
+th{padding:10px 13px;text-align:left;font-weight:600;color:var(--text2);font-size:11px;text-transform:uppercase;letter-spacing:.06em;white-space:nowrap;border-bottom:1px solid var(--border);}
+td{padding:9px 13px;border-bottom:1px solid rgba(42,53,80,.4);color:var(--text);vertical-align:middle;white-space:nowrap;}
+tr:hover td{background:rgba(255,255,255,.02);}
+tr:last-child td{border-bottom:none;}
+.mn{font-family:'DM Mono',monospace;font-size:12px;}
+.bge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600;}
+.ba{background:rgba(16,185,129,.15);color:var(--green);}
+.bi{background:rgba(245,158,11,.15);color:var(--yellow);}
+.bb{background:rgba(239,68,68,.15);color:var(--red);}
+.bn{background:rgba(100,116,139,.15);color:var(--text3);}
+.bt{display:inline-flex;align-items:center;font-size:11px;font-weight:700;padding:3px 9px;border-radius:6px;}
+.bca{background:rgba(0,91,170,.25);color:#5ba8f5;}
+.mdr{background:rgba(247,148,29,.2);color:#f7b56d;}
+.bni{background:rgba(247,148,29,.2);color:#fbbf24;}
+.bri{background:rgba(0,51,153,.25);color:#93c5fd;}
+.oth{background:rgba(139,92,246,.2);color:#c4b5fd;}
+.ty{display:inline-block;padding:2px 8px;border-radius:5px;font-size:10px;font-weight:600;}
+.tt{background:rgba(139,92,246,.15);color:#c4b5fd;}
+.tb2{background:rgba(16,185,129,.12);color:#6ee7b7;}
+.tk{background:rgba(239,68,68,.12);color:#fca5a5;}
+.tw2{background:rgba(249,115,22,.12);color:#fdba74;}
+.td{background:rgba(59,130,246,.12);color:#93c5fd;}
+.pb{background:var(--bg3);border-radius:4px;height:6px;width:90px;overflow:hidden;}
+.pf{height:100%;border-radius:4px;background:linear-gradient(90deg,var(--accent),var(--accent2));}
+.pf.low{background:linear-gradient(90deg,var(--red),var(--orange));}
+.iform{padding:18px 20px;border-bottom:1px solid var(--border);background:var(--bg3);}
+.fr{display:grid;grid-template-columns:repeat(auto-fill,minmax(148px,1fr));gap:10px;align-items:end;}
+.fg{display:flex;flex-direction:column;gap:5px;}
+.fg label{font-size:11px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.06em;}
+.fg input,.fg select{background:var(--card2);border:1px solid var(--border);color:var(--text);padding:8px 11px;border-radius:8px;font-size:13px;font-family:'Plus Jakarta Sans',sans-serif;outline:none;transition:.2s;width:100%;}
+.fg input:focus,.fg select:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(59,130,246,.12);}
+.bp{background:linear-gradient(135deg,#3b82f6,#6366f1);color:#fff;border:none;padding:8px 18px;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;transition:.2s;white-space:nowrap;}
+.bp:hover{opacity:.9;transform:translateY(-1px);}
+.bs{background:var(--card2);color:var(--text2);border:1px solid var(--border);padding:6px 14px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;}
+.bs:hover{border-color:var(--accent);color:var(--text);}
+.bd{background:rgba(239,68,68,.13);color:var(--red);border:1px solid rgba(239,68,68,.25);padding:4px 10px;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;}
+.bd:hover{background:rgba(239,68,68,.25);}
+
+.editable{cursor:pointer;border-bottom:1px dashed var(--border2);transition:.15s;padding:3px 6px;border-radius:4px;}
+.editable:hover{background:rgba(59,130,246,.12);border-bottom-color:var(--accent);}
+.edit-input{background:var(--card2);border:1px solid var(--accent);color:var(--text);padding:4px 8px;border-radius:6px;font-family:'DM Mono',monospace;font-size:12px;outline:none;box-shadow:0 0 0 3px rgba(59,130,246,.15);width:100%;min-width:80px;}
+.edit-hint{font-size:10px;color:var(--text3);display:block;margin-top:3px;}
+
+/* ── MODAL TAMBAH OPSI ── */
+.modal-overlay{display:none;position:fixed;inset:0;z-index:500;background:rgba(0,0,0,.6);backdrop-filter:blur(4px);align-items:center;justify-content:center;}
+.modal-overlay.open{display:flex;}
+.modal-box{background:var(--card);border:1px solid var(--border2);border-radius:16px;padding:28px;width:340px;box-shadow:0 24px 64px rgba(0,0,0,.5);}
+.modal-title{font-size:15px;font-weight:700;margin-bottom:6px;}
+.modal-sub{font-size:12px;color:var(--text3);margin-bottom:18px;}
+.modal-input{width:100%;background:var(--card2);border:1px solid var(--border);color:var(--text);padding:10px 14px;border-radius:8px;font-size:14px;font-family:'Plus Jakarta Sans',sans-serif;outline:none;transition:.2s;margin-bottom:14px;}
+.modal-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(59,130,246,.15);}
+.modal-btns{display:flex;gap:10px;justify-content:flex-end;}
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none;margin:0;}
+input[type=number]{-moz-appearance:textfield;}
+footer{border-top:1px solid var(--border);padding:18px 32px;text-align:center;color:var(--text3);font-size:12px;}
+@media(max-width:900px){.pgrid{grid-template-columns:1fr;}main{padding:16px;}header{padding:0 16px;}.fr{grid-template-columns:1fr 1fr;}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="hi">
+    <div class="logo">
+      <div class="logo-icon">BO</div>
+      <div>
+        <div class="logo-text">Bank Operasional</div>
+        <div class="logo-sub">Dashboard</div>
+      </div>
+    </div>
+    <div class="hr">
+      <div class="sb">
+        <span style="color:var(--text3);font-size:14px">🔍</span>
+        <input type="text" id="s-search" placeholder="Cari nama, bank, agent…">
+      </div>
+      <select class="fs" id="s-bank"><option value="">Semua Bank</option></select>
+      <select class="fs" id="s-status">
+        <option value="">Semua Status</option>
+      </select>
+      <select class="fs" id="s-agent"><option value="">Semua Agent</option></select>
+      <span style="font-size:11px;color:var(--text3)" id="last-up">–</span>
+    </div>
+  </div>
+</header>
+
+<main>
+  <!-- KPI -->
+  <div class="kgrid">
+    <div class="kcard" style="--ac:#3b82f6"><div class="kl">Total Rekening</div><div class="kv" id="kpi-tot">–</div><div class="ks">Semua status</div></div>
+    <div class="kcard" style="--ac:#10b981"><div class="kl">Total Saldo</div><div class="kv" id="kpi-sal">–</div><div class="ks">Rekening aktif</div></div>
+    <div class="kcard" style="--ac:#6366f1"><div class="kl">Rekening Active</div><div class="kv" id="kpi-act">–</div><div class="ks" id="kpi-apct">dari total</div></div>
+    <div class="kcard" style="--ac:#f59e0b"><div class="kl">Inkubasi</div><div class="kv" id="kpi-ink">–</div><div class="ks">Perlu dipantau</div></div>
+    <div class="kcard" style="--ac:#ef4444"><div class="kl">Blokir / Nonaktif</div><div class="kv" id="kpi-blk">–</div><div class="ks">Blokir + In Active</div></div>
+    <div class="kcard" style="--ac:#8b5cf6"><div class="kl">Transaksi Harian</div><div class="kv" id="kpi-txn">–</div><div class="ks" id="kpi-txs">Input Harian</div></div>
+  </div>
+
+  <!-- STATUS STRIP -->
+  <div class="strip" id="strip"></div>
+
+  <!-- STATUS REKENING + SALDO PER BANK -->
+  <div class="pgrid">
+    <div class="cc">
+      <div style="margin-bottom:14px"><span class="st">Status Rekening</span></div>
+      <div style="position:relative;height:240px"><canvas id="c-status"></canvas></div>
+    </div>
+    <div class="cc">
+      <div style="margin-bottom:14px"><span class="st">Saldo per Bank</span></div>
+      <div style="position:relative;height:240px"><canvas id="c-saldo"></canvas></div>
+    </div>
+  </div>
+
+  <!-- ANALISIS SISA SALDO & LIMIT TRANSFER -->
+  <div class="tc" style="overflow:visible">
+    <div class="th">
+      <span class="st">Analisis Limit Transfer Harian</span>
+      <div style="display:flex;align-items:center;gap:8px">
+        <label style="font-size:12px;color:var(--text2)">Filter:</label>
+        <select id="sf" class="fs"><option value="ALL">Semua Bank</option></select>
+      </div>
+    </div>
+    <div style="padding:20px">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px">
+        <div style="background:var(--bg3);border-radius:10px;padding:13px 15px;border:1px solid var(--border)">
+          <div style="font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--text3);margin-bottom:5px;font-weight:600">Total Limit Antar Bank</div>
+          <div id="kk2" style="font-size:19px;font-weight:800;font-family:'DM Mono',monospace;color:#10b981">–</div>
+        </div>
+        <div style="background:var(--bg3);border-radius:10px;padding:13px 15px;border:1px solid var(--border)">
+          <div style="font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--text3);margin-bottom:5px;font-weight:600">Total Limit Sama Bank</div>
+          <div id="kk3" style="font-size:19px;font-weight:800;font-family:'DM Mono',monospace;color:#f59e0b">–</div>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px">
+        <div>
+          <div style="font-size:12px;font-weight:700;color:var(--text2);margin-bottom:4px">Limit Antar Bank — per Rekening</div>
+          <div style="font-size:11px;color:var(--text3);margin-bottom:12px;display:flex;gap:14px">
+            <span style="display:flex;align-items:center;gap:5px"><span style="width:10px;height:6px;border-radius:3px;background:linear-gradient(90deg,#10b981,#34d399);display:inline-block"></span>Sisa</span>
+            <span style="display:flex;align-items:center;gap:5px"><span style="width:10px;height:6px;border-radius:3px;background:rgba(239,68,68,.5);display:inline-block"></span>Terpakai</span>
+          </div>
+          <div id="antar-bars" style="max-height:300px;overflow-y:auto;padding-right:4px"></div>
+        </div>
+        <div>
+          <div style="font-size:12px;font-weight:700;color:var(--text2);margin-bottom:4px">Limit Sama Bank — per Rekening</div>
+          <div style="font-size:11px;color:var(--text3);margin-bottom:12px;display:flex;gap:14px">
+            <span style="display:flex;align-items:center;gap:5px"><span style="width:10px;height:6px;border-radius:3px;background:linear-gradient(90deg,#10b981,#34d399);display:inline-block"></span>Sisa</span>
+            <span style="display:flex;align-items:center;gap:5px"><span style="width:10px;height:6px;border-radius:3px;background:rgba(239,68,68,.5);display:inline-block"></span>Terpakai</span>
+          </div>
+          <div id="p-sama-bars" style="max-height:300px;overflow-y:auto;padding-right:4px"></div>
+        </div>
+      </div>
+      <div id="pleg" style="display:flex;gap:14px;flex-wrap:wrap;margin-top:14px;font-size:12px;color:var(--text2);justify-content:center"></div>
+    </div>
+  </div>
+
+  <!-- DATA REKENING -->
+  <div class="tc">
+    <div class="th">
+      <span class="st">Data Rekening</span>
+      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+        <span id="tbl-cnt" style="font-size:12px;color:var(--text2)"></span>
+        <button class="bp" style="font-size:12px;padding:6px 14px" onclick="tog('f-bank')">+ Tambah Bank Baru</button>
+      </div>
+    </div>
+    <!-- FILTER SUMMARY BAR -->
+    <div id="tbl-summary" style="display:none;padding:12px 20px;background:linear-gradient(135deg,rgba(59,130,246,.08),rgba(99,102,241,.06));border-bottom:1px solid var(--border);flex-wrap:wrap;gap:10px;align-items:center">
+    </div>
+
+    <div id="f-bank" style="display:none" class="iform">
+      <div style="font-size:13px;font-weight:700;margin-bottom:13px">Tambah Rekening Baru</div>
+      <div class="fr">
+        <div class="fg"><label>Status</label><select id="nb-st" onchange="ddNew(this,'status')"></select></div>
+        <div class="fg"><label>Bank</label><select id="nb-bk" onchange="ddNew(this,'bank')"><option value="">Pilih bank...</option><option value="__new__">➕ Tambah baru...</option></select></div>
+        <div class="fg"><label>Nama Rekening</label><input id="nb-nm" placeholder="Nama lengkap"></div>
+        <div class="fg"><label>Nomor Rekening</label><input id="nb-no" placeholder="Nomor rekening"></div>
+        <div class="fg"><label>Type</label><select id="nb-ty" onchange="ddNew(this,'type')"></select></div>
+        <div class="fg"><label>Agent</label><select id="nb-ag" onchange="ddNew(this,'agent')"><option value="">Pilih agent...</option><option value="__new__">➕ Tambah baru...</option></select></div>
+        <div class="fg"><label>Sumber</label><select id="nb-sb" onchange="ddNew(this,'sumber')"><option value="">Pilih sumber...</option><option>Internal</option><option>WW</option><option>Erwin</option><option value="__new__">➕ Tambah baru...</option></select></div>
+        <div class="fg"><label>Max Saldo (Rp)</label><input id="nb-mx" type="number" placeholder="50000000"></div>
+        <div class="fg"><label>Saldo Akhir (Rp)</label><input id="nb-sl" type="number" placeholder="0"></div>
+        <div class="fg"><label>Limit Antar Bank</label><input id="nb-at" type="number" placeholder="0"></div>
+        <div class="fg"><label>Limit Sama Bank</label><input id="nb-sm" type="number" placeholder="0"></div>
+        <div class="fg" style="flex-direction:row;gap:8px;align-items:flex-end">
+          <button class="bp" onclick="addBank()">Simpan</button>
+          <button class="bs" onclick="tog('f-bank')">Batal</button>
+        </div>
+      </div>
+    </div>
+    <div class="tw">
+      <table>
+        <thead><tr>
+          <th>#</th><th>Status</th><th>Bank</th><th>Nama Rekening</th><th>Nomor Rekening</th>
+          <th>Type</th><th>Agent</th><th>Saldo Akhir</th><th>Max Saldo</th><th>Utilisasi</th>
+          <th>Sisa Saldo Bank</th><th>Limit Antar Bank</th><th>Limit Sama Bank</th><th>Sumber</th><th>Aksi</th>
+        </tr></thead>
+        <tbody id="t-body"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- TRANSAKSI HARIAN -->
+  <div class="tc">
+    <div class="th">
+      <span class="st">Transaksi Harian (Input Harian)</span>
+      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+        <span id="txn-cnt" style="font-size:12px;color:var(--text2)"></span>
+        <button class="bp" style="font-size:12px;padding:6px 14px" onclick="tog('f-txn')">+ Input Transaksi</button>
+      </div>
+    </div>
+    <div id="f-txn" style="display:none" class="iform">
+      <div style="font-size:13px;font-weight:700;margin-bottom:13px">Input Transaksi Baru</div>
+      <div class="fr">
+        <div class="fg"><label>Tanggal <span style="color:var(--yellow);font-size:10px;font-weight:600;background:rgba(245,158,11,.12);padding:2px 6px;border-radius:4px;text-transform:none;letter-spacing:0">🔒 Hari ini</span></label><input type="date" id="tx-tgl"></div>
+        <div class="fg" style="min-width:200px"><label>Rekening</label><select id="tx-rek"><option value="">Pilih rekening…</option></select></div>
+        <div class="fg"><label>Masuk / Keluar</label><select id="tx-jen"><option>Masuk</option><option>Keluar</option></select></div>
+        <div class="fg"><label>Jenis Transfer</label><select id="tx-tr"><option>Sesama Bank</option><option>Antar Bank</option></select></div>
+        <div class="fg"><label>Jumlah (Rp)</label><input type="number" id="tx-jml" placeholder="5000000"></div>
+        <div class="fg"><label>Fee Bank (Rp)</label><input type="number" id="tx-fee" placeholder="0"></div>
+        <div class="fg" style="flex-direction:row;gap:8px;align-items:flex-end">
+          <button class="bp" onclick="addTxn()">Simpan</button>
+          <button class="bs" onclick="tog('f-txn')">Batal</button>
+        </div>
+      </div>
+    </div>
+    <div class="tw">
+      <table>
+        <thead><tr><th>#</th><th>Tanggal</th><th>Rekening</th><th>Masuk/Keluar</th><th>Jenis Transfer</th><th>Jumlah</th><th>Fee Bank</th><th>Aksi</th></tr></thead>
+        <tbody id="tx-body"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- HISTORY TRANSAKSI -->
+  <div class="tc">
+    <div class="th">
+      <span class="st">History Transaksi</span>
+      <span id="hist-cnt" style="font-size:12px;color:var(--text2)"></span>
+    </div>
+    <!-- FILTER BAR -->
+    <div style="padding:16px 20px;border-bottom:1px solid var(--border);background:var(--bg3);display:flex;flex-wrap:wrap;gap:12px;align-items:flex-end;">
+      <div class="fg" style="min-width:140px">
+        <label>Dari Tanggal</label>
+        <input type="date" id="h-dari">
+      </div>
+      <div class="fg" style="min-width:140px">
+        <label>Sampai Tanggal</label>
+        <input type="date" id="h-sampai">
+      </div>
+      <div class="fg" style="min-width:140px">
+        <label>Bank</label>
+        <select id="h-bank" class="fs" style="width:100%">
+          <option value="">Semua Bank</option>
+        </select>
+      </div>
+      <div class="fg" style="min-width:160px">
+        <label>Rekening / Nama</label>
+        <select id="h-rek" class="fs" style="width:100%">
+          <option value="">Semua Rekening</option>
+        </select>
+      </div>
+      <div class="fg" style="min-width:120px">
+        <label>Masuk / Keluar</label>
+        <select id="h-jenis" class="fs" style="width:100%">
+          <option value="">Semua</option>
+          <option>Masuk</option>
+          <option>Keluar</option>
+        </select>
+      </div>
+      <div class="fg" style="flex-direction:row;gap:8px;align-items:flex-end">
+        <button class="bp" style="padding:8px 18px" onclick="rHist()">🔍 Cari</button>
+        <button class="bs" onclick="resetHist()">Reset</button>
+      </div>
+    </div>
+    <!-- SUMMARY STRIP -->
+    <div id="hist-sum" style="display:none;padding:12px 20px;border-bottom:1px solid var(--border);background:var(--bg3);display:flex;gap:16px;flex-wrap:wrap;align-items:center">
+    </div>
+    <!-- TABLE -->
+    <div class="tw">
+      <table>
+        <thead><tr>
+          <th>#</th><th>Tanggal</th><th>Bank</th><th>Nama Rekening</th>
+          <th>Masuk/Keluar</th><th>Jenis Transfer</th><th>Jumlah</th><th>Fee Bank</th>
+        </tr></thead>
+        <tbody id="hist-body"></tbody>
+      </table>
+    </div>
+  </div>
+  <!-- MODAL KELOLA OPSI DROPDOWN -->
+  <div class="modal-overlay" id="dd-modal">
+    <div class="modal-box" style="width:400px">
+      <div class="modal-title" id="dd-modal-title">Kelola Opsi</div>
+      <div style="display:flex;gap:8px;margin-bottom:16px;border-bottom:1px solid var(--border);padding-bottom:14px">
+        <button id="dd-tab-add" class="bp" style="flex:1;font-size:12px;padding:7px" onclick="ddTab('add')">➕ Tambah Baru</button>
+        <button id="dd-tab-del" class="bs" style="flex:1;font-size:12px;padding:7px" onclick="ddTab('del')">🗑 Hapus Opsi</button>
+      </div>
+      <!-- Panel Tambah -->
+      <div id="dd-panel-add">
+        <div class="modal-sub" id="dd-modal-sub">Ketik nama opsi baru, lalu klik Simpan</div>
+        <input class="modal-input" id="dd-modal-input" placeholder="Ketik di sini..." autocomplete="off"
+          onkeydown="if(event.key==='Enter')ddSave();if(event.key==='Escape')ddCancel();">
+        <div class="modal-btns">
+          <button class="bs" onclick="ddCancel()">Batal</button>
+          <button class="bp" onclick="ddSave()">Simpan</button>
+        </div>
+      </div>
+      <!-- Panel Hapus -->
+      <div id="dd-panel-del" style="display:none">
+        <div class="modal-sub">Klik opsi yang ingin dihapus dari daftar</div>
+        <div id="dd-del-list" style="display:flex;flex-direction:column;gap:6px;max-height:260px;overflow-y:auto;margin-bottom:14px"></div>
+        <div class="modal-btns">
+          <button class="bs" onclick="ddCancel()">Tutup</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<footer>Bank Operasional Dashboard • <span id="fdate"></span></footer>
+
+<script>
+let rD=[],tD=[],CH={};
+const BP={BCA:'#185FA5',Mandiri:'#0F6E56',BNI:'#BA7517',BRI:'#A32D2D'};
+const BC={BCA:'#5ba8f5',Mandiri:'#f7b56d',BNI:'#fbbf24',BRI:'#93c5fd'};
+const SC={Active:'#10b981',Inkubasi:'#f59e0b',Blokir:'#ef4444','In Active':'#64748b'};
+const EX=['#7c3aed','#0891b2','#be185d','#16a34a','#0369a1','#9f1239'];
+
+document.getElementById('fdate').textContent=new Date().toLocaleDateString('id-ID',{day:'2-digit',month:'long',year:'numeric'});
+// Lock transaksi date to today WIB only
+function setTodayInput(){
+  const todayStr=getTodayWIB(); // YYYY-MM-DD WIB
+  const tglEl=document.getElementById('tx-tgl');
+  tglEl.value=todayStr;
+  tglEl.min=todayStr;
+  tglEl.max=todayStr;
+  tglEl.readOnly=true;
+  tglEl.style.cssText+='cursor:not-allowed;opacity:.7;';
+  tglEl.title='Tanggal transaksi dikunci ke hari ini (cut-off 00:00 WIB)';
+}
+setTodayInput();
+
+['s-search','s-bank','s-status','s-agent'].forEach(id=>document.getElementById(id).addEventListener('input',rTbl));
+document.getElementById('sf').addEventListener('change',function(){rSisa(this.value);});
+
+const pn=v=>{if(typeof v==='number')return v;if(!v)return 0;const n=parseFloat(String(v).replace(/[^0-9.-]/g,''));return isNaN(n)?0:n;};
+const fmt=n=>new Intl.NumberFormat('id-ID').format(Math.round(n));
+const fR=n=>{const a=Math.abs(n),s=n<0?'-':'';if(a>=1e9)return s+'Rp '+fmt(a/1e9)+'M';if(a>=1e6)return s+'Rp '+fmt(a/1e6)+'jt';return s+'Rp '+fmt(a);};
+const fFull=n=>{const a=Math.abs(n),s=n<0?'-':'';return s+'Rp '+fmt(a);};
+const tog=id=>{const e=document.getElementById(id);e.style.display=e.style.display==='none'?'block':'none';};
+const gc=(b,i)=>BP[b]||(EX[i%EX.length]);
+const bClass=b=>({BCA:'bca',Mandiri:'mdr',BNI:'bni',BRI:'bri'}[b]||'oth');
+const tyClass=t=>({Tampungan:'tt',Bersih:'tb2',Kotor:'tk','Wd SBO':'tw2','Dp SBO':'td','Wd 3Dgenz':'tw2'}[t]||'tt');
+const grp=(a,k)=>{const o={};a.forEach(d=>{const v=d[k];if(!o[v])o[v]=[];o[v].push(d);});return o;};
+
+function pFilt(){
+  const banks=[...new Set(rD.map(d=>d.bank).filter(Boolean))].sort();
+  const agents=[...new Set(rD.flatMap(d=>d.agent.split(',').map(a=>a.trim())).filter(a=>a&&a!=='–'))].sort();
+
+  // ── Helper: rebuild a <select> preserving its current value ──
+  function rebuildSel(selId, opts, placeholder){
+    const sel=document.getElementById(selId);
+    const cur=sel.value; // save before rebuild
+    sel.innerHTML='';
+    const ph=document.createElement('option');
+    ph.value=''; ph.textContent=placeholder;
+    sel.appendChild(ph);
+    opts.forEach(o=>{
+      const el=document.createElement('option');
+      el.value=o; el.textContent=o;
+      if(o===cur) el.selected=true;
+      sel.appendChild(el);
+    });
+    // If previously selected value no longer exists, stays on placeholder
+  }
+
+  rebuildSel('s-bank', banks, 'Semua Bank');
+  rebuildSel('s-agent', agents, 'Semua Agent');
+  syncStatusFilter(); // also preserves s-status value
+
+  // Sisa filter dropdown (analisis section)
+  const sf=document.getElementById('sf'),cv=sf.value;
+  sf.innerHTML='<option value="ALL">Semua Bank</option>';
+  banks.forEach(b=>{ const o=document.createElement('option');o.value=b;o.textContent=b;if(b===cv)o.selected=true;sf.appendChild(o); });
+
+  // Rekening dropdown for input transaksi
+  const rk=document.getElementById('tx-rek');
+  const rv=rk.value;
+  rk.innerHTML='<option value="">Pilih rekening…</option>';
+  rD.forEach(d=>{
+    const v=d.bank+' '+d.nama+' '+d.nomor;
+    const o=document.createElement('option');
+    o.value=v; o.textContent=d.bank+' — '+d.nama+' ('+d.nomor+')';
+    if(v===rv) o.selected=true;
+    rk.appendChild(o);
+  });
+
+  document.getElementById('pleg').innerHTML=banks.map((b,i)=>`<span style="display:flex;align-items:center;gap:5px"><span style="width:10px;height:10px;border-radius:50%;background:${gc(b,i)};display:inline-block"></span>${b}</span>`).join('');
+}
+
+function syncStatusFilter(){
+  const sel=document.getElementById('s-status');
+  const cur=sel.value;
+  sel.innerHTML='<option value="">Semua Status</option>';
+  ddLists.status.forEach(s=>{
+    const o=document.createElement('option');
+    o.value=s; o.textContent=s;
+    if(s===cur) o.selected=true;
+    sel.appendChild(o);
+  });
+}
+
+function rKPI(){
+  const act=rD.filter(d=>d.status==='Active');
+  // Only count today's transactions for KPI card
+  const todayStr=getTodayWIB().split('-').reverse().join('/');
+  const todayTxn=tD.filter(d=>d.tanggal===todayStr);
+  const txIn=todayTxn.filter(d=>d.jenis==='Masuk').reduce((s,d)=>s+d.jumlah,0);
+  const txOut=todayTxn.filter(d=>d.jenis==='Keluar').reduce((s,d)=>s+d.jumlah,0);
+  document.getElementById('kpi-tot').textContent=rD.length;
+  document.getElementById('kpi-sal').textContent=fR(act.reduce((s,d)=>s+d.saldo,0));
+  document.getElementById('kpi-act').textContent=act.length;
+  document.getElementById('kpi-apct').textContent=(rD.length?Math.round(act.length/rD.length*100):0)+'% dari total';
+  document.getElementById('kpi-ink').textContent=rD.filter(d=>d.status==='Inkubasi').length;
+  document.getElementById('kpi-blk').textContent=rD.filter(d=>d.status==='Blokir'||d.status==='In Active').length;
+  document.getElementById('kpi-txn').textContent=todayTxn.length;
+  document.getElementById('kpi-txs').textContent=`Masuk: ${fR(txIn)} | Keluar: ${fR(txOut)}`;
+}
+
+function rStrip(){
+  const sc={},bc={};rD.forEach(d=>{sc[d.status]=(sc[d.status]||0)+1;bc[d.bank]=(bc[d.bank]||0)+1;});
+  const dm={Active:'da',Inkubasi:'di',Blokir:'db','In Active':'dn'};
+  let h='';
+  Object.entries(sc).forEach(([k,v])=>h+=`<div class="chip"><span class="dot ${dm[k]||'dn'}"></span><span style="color:var(--text2)">${k}</span><span class="sc">${v}</span></div>`);
+  Object.entries(bc).forEach(([k,v])=>h+=`<div class="chip"><span style="font-weight:700;color:#94a3b8">${k}</span><span class="sc">${v}</span><span style="color:var(--text3);font-size:11px">rek</span></div>`);
+  document.getElementById('strip').innerHTML=h;
+}
+
+function rCharts(){
+  ['cs','csal','ps','pa'].forEach(k=>{if(CH[k])CH[k].destroy();});
+  const sg=grp(rD,'status');
+  const po={responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{color:'#94a3b8',boxWidth:12,font:{size:11},padding:10}},tooltip:{backgroundColor:'#1e2840',borderColor:'#2a3550',borderWidth:1}}};
+  CH.cs=new Chart(document.getElementById('c-status'),{type:'doughnut',data:{labels:Object.keys(sg),datasets:[{data:Object.values(sg).map(v=>v.length),backgroundColor:Object.keys(sg).map(k=>(SC[k]||'#64748b')+'bb'),borderColor:Object.keys(sg).map(k=>SC[k]||'#64748b'),borderWidth:2}]},options:po});
+  const bl=[...new Set(rD.map(d=>d.bank))].sort();
+  const bs=bl.map(b=>rD.filter(d=>d.bank===b).reduce((s,d)=>s+d.saldo,0));
+  CH.csal=new Chart(document.getElementById('c-saldo'),{type:'bar',data:{labels:bl,datasets:[{data:bs,backgroundColor:bl.map(b=>(BC[b]||'#8b5cf6')+'99'),borderColor:bl.map(b=>BC[b]||'#8b5cf6'),borderWidth:2,borderRadius:6}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{backgroundColor:'#1e2840',borderColor:'#2a3550',borderWidth:1,callbacks:{label:ctx=>' '+fR(ctx.parsed.y)}}},scales:{x:{grid:{color:'rgba(255,255,255,.04)'},ticks:{color:'#94a3b8',font:{size:11}}},y:{grid:{color:'rgba(255,255,255,.04)'},ticks:{color:'#94a3b8',font:{size:11},callback:v=>fR(v)}}}}});
+  rSisa(document.getElementById('sf').value||'ALL');
+}
+
+function buildBarProgress(elId, data, sisaKey, maxKey){
+  const el=document.getElementById(elId);
+  if(!el) return;
+  el.innerHTML='';
+  const BANK_BG={'BCA':'rgba(0,91,170,.25)','Mandiri':'rgba(247,148,29,.2)','BNI':'rgba(247,148,29,.2)','BRI':'rgba(0,51,153,.25)'};
+  const BANK_FG={'BCA':'#5ba8f5','Mandiri':'#f7b56d','BNI':'#fbbf24','BRI':'#93c5fd'};
+  data.forEach(d=>{
+    const sisa=Math.max(0,d[sisaKey]);
+    const mxV=d[maxKey]||sisa||1;
+    const terpakai=Math.max(0,mxV-sisa);
+    const pctSisa=mxV>0?Math.min(100,Math.round((sisa/mxV)*100)):100;
+    const pctTrpk=100-pctSisa;
+    const nama=d.nama.length>15?d.nama.slice(0,15)+'…':d.nama;
+    const bgCol=BANK_BG[d.bank]||'rgba(139,92,246,.2)';
+    const fgCol=BANK_FG[d.bank]||'#c4b5fd';
+    const row=document.createElement('div');
+    row.style.cssText='margin-bottom:11px';
+    row.innerHTML=`
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+        <div style="display:flex;align-items:center;gap:7px">
+          <span style="font-size:10px;font-weight:700;padding:2px 6px;border-radius:4px;background:${bgCol};color:${fgCol}">${d.bank}</span>
+          <span style="font-size:11px;font-weight:600;color:var(--text)">${nama}</span>
+        </div>
+        <span style="font-size:10px;color:var(--text3);font-family:'DM Mono',monospace">${fR(sisa)}</span>
+      </div>
+      <div style="position:relative;height:8px;border-radius:6px;overflow:hidden;background:var(--bg3)">
+        <div style="position:absolute;left:0;top:0;height:100%;width:${pctSisa}%;background:linear-gradient(90deg,#10b981,#34d399);border-radius:6px;transition:width .5s ease" title="Sisa: ${fR(sisa)}"></div>
+        <div style="position:absolute;right:0;top:0;height:100%;width:${pctTrpk}%;background:rgba(239,68,68,.5);border-radius:6px;transition:width .5s ease" title="Terpakai: ${fR(terpakai)}"></div>
+      </div>
+      <div style="display:flex;justify-content:space-between;margin-top:3px">
+        <span style="font-size:9px;color:#10b981">Sisa ${pctSisa}%</span>
+        <span style="font-size:9px;color:#ef4444">Terpakai ${pctTrpk}%</span>
+      </div>`;
+    el.appendChild(row);
+  });
+}
+
+function rSisa(f){
+  // no canvas to destroy for sama bank
+  const data=f&&f!=='ALL'?rD.filter(d=>d.bank===f):rD;
+  document.getElementById('kk2').textContent=fR(data.reduce((s,d)=>s+d.sisaTransAntar,0));
+  document.getElementById('kk3').textContent=fR(data.reduce((s,d)=>s+d.sisaTransSama,0));
+  const banks=[...new Set(rD.map(d=>d.bank))].sort();
+  const bC=banks.map((b,i)=>gc(b,i)+'cc'),bBd=banks.map((b,i)=>gc(b,i));
+
+  // ── Bar progress: Limit Antar Bank per rekening ──
+  buildBarProgress('antar-bars', data, 'sisaTransAntar', 'maxTransAntar');
+
+  // ── Bar progress: Limit Sama Bank per rekening ──
+  buildBarProgress('p-sama-bars', data, 'sisaTransSama', 'maxTransSama');
+}
+
+function rTbl(){
+  const q=document.getElementById('s-search').value.toLowerCase();
+  const bk=document.getElementById('s-bank').value;
+  const st=document.getElementById('s-status').value;
+  const ag=document.getElementById('s-agent').value;
+  const fd=rD.filter(d=>{
+    if(bk&&d.bank!==bk)return false;
+    if(st&&d.status!==st)return false;
+    if(ag&&!d.agent.includes(ag))return false;
+    if(q&&!`${d.nama} ${d.bank} ${d.agent} ${d.nomor}`.toLowerCase().includes(q))return false;
+    return true;
+  });
+  document.getElementById('tbl-cnt').textContent=`${fd.length} dari ${rD.length} rekening`;
+
+  // ── SUMMARY BAR ──
+  const sumEl=document.getElementById('tbl-summary');
+  const isFiltered=(bk||st||ag||q);
+  if(isFiltered && fd.length){
+    const totSaldo=fd.reduce((s,d)=>s+d.saldo,0);
+    const totMax=fd.reduce((s,d)=>s+d.maxSaldo,0);
+    const totSisaSaldo=fd.reduce((s,d)=>s+d.sisaSaldo,0);
+    const totAntar=fd.reduce((s,d)=>s+d.sisaTransAntar,0);
+    const totSama=fd.reduce((s,d)=>s+d.sisaTransSama,0);
+    const aktif=fd.filter(d=>d.status==='Active').length;
+    sumEl.style.display='flex';
+    sumEl.innerHTML=`
+      <div style="display:flex;align-items:center;gap:6px;background:rgba(16,185,129,.1);border:1px solid rgba(16,185,129,.2);border-radius:8px;padding:8px 14px;flex-shrink:0">
+        <span style="font-size:10px;text-transform:uppercase;letter-spacing:.06em;color:var(--text3);font-weight:600">Total Saldo</span>
+        <span style="font-family:'DM Mono',monospace;font-size:14px;font-weight:800;color:var(--green)">${fFull(totSaldo)}</span>
+      </div>
+
+      <div style="display:flex;align-items:center;gap:6px;background:rgba(16,185,129,.08);border:1px solid rgba(16,185,129,.15);border-radius:8px;padding:8px 14px;flex-shrink:0">
+        <span style="font-size:10px;text-transform:uppercase;letter-spacing:.06em;color:var(--text3);font-weight:600">Limit Antar</span>
+        <span style="font-family:'DM Mono',monospace;font-size:14px;font-weight:800;color:#34d399">${fFull(totAntar)}</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:6px;background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.15);border-radius:8px;padding:8px 14px;flex-shrink:0">
+        <span style="font-size:10px;text-transform:uppercase;letter-spacing:.06em;color:var(--text3);font-weight:600">Limit Sama</span>
+        <span style="font-family:'DM Mono',monospace;font-size:14px;font-weight:800;color:#fbbf24">${fFull(totSama)}</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:6px;background:rgba(139,92,246,.08);border:1px solid rgba(139,92,246,.15);border-radius:8px;padding:8px 14px;flex-shrink:0">
+        <span style="font-size:10px;text-transform:uppercase;letter-spacing:.06em;color:var(--text3);font-weight:600">Rekening Active</span>
+        <span style="font-family:'DM Mono',monospace;font-size:14px;font-weight:800;color:#c4b5fd">${aktif} / ${fd.length}</span>
+      </div>`;
+  } else {
+    sumEl.style.display='none';
+  }
+
+  const tb=document.getElementById('t-body');
+  if(!fd.length){tb.innerHTML='<tr><td colspan="15" style="text-align:center;padding:40px;color:var(--text3)">Tidak ada data yang cocok</td></tr>';return;}
+  tb.innerHTML=fd.map((d,i)=>{
+    const pct=d.maxSaldo?Math.min(100,Math.round(d.saldo/d.maxSaldo*100)):0;
+    const low=pct<20;
+    const ri=rD.indexOf(d);
+    return `<tr data-ri="${ri}">
+      <td class="mn" style="color:var(--text3)">${i+1}</td>
+      <td><span class="bge ${{Active:'ba',Inkubasi:'bi',Blokir:'bb','In Active':'bn'}[d.status]||'bn'}">${d.status}</span></td>
+      <td><span class="bt ${bClass(d.bank)}">${d.bank}</span></td>
+      <td style="font-weight:600">${d.nama}</td>
+      <td class="mn" style="color:var(--text2)">${d.nomor}</td>
+      <td><span class="ty ${tyClass(d.type)}">${d.type}</span></td>
+      <td class="editable" title="Klik untuk edit Agent" onclick="startEdit(this,${ri},'agent','text')" style="color:var(--text2);font-size:12px">
+        <span class="ev">${d.agent||'–'}</span>
+        <span class="edit-hint">✏️ klik edit</span>
+      </td>
+      <td class="mn" style="color:${d.saldo>0?'var(--green)':'var(--text3)'}">${fFull(d.saldo)}</td>
+      <td class="editable mn" title="Klik untuk edit Max Saldo" onclick="startEdit(this,${ri},'maxSaldo','number')">
+        <span class="ev">${fFull(d.maxSaldo)}</span>
+        <span class="edit-hint">✏️ klik edit</span>
+      </td>
+      <td><div style="display:flex;align-items:center;gap:6px"><div class="pb"><div class="pf${low?' low':''}" style="width:${pct}%"></div></div><span class="mn" style="font-size:11px;color:${low?'var(--red)':'var(--text2)'}">${pct}%</span></div></td>
+      <td class="mn" style="color:${d.sisaSaldo<0?'var(--red)':d.sisaSaldo<5000000?'var(--yellow)':'var(--green)'}">${fFull(d.sisaSaldo)}</td>
+      <td class="editable mn" title="Klik untuk edit Limit Antar Bank" onclick="startEdit(this,${ri},'sisaTransAntar','number')" style="color:${d.sisaTransAntar<10000000?'var(--yellow)':'var(--text2)'}">
+        <span class="ev">${fFull(d.sisaTransAntar)}</span>
+        <span class="edit-hint">✏️ klik edit</span>
+      </td>
+      <td class="editable mn" title="Klik untuk edit Limit Sama Bank" onclick="startEdit(this,${ri},'sisaTransSama','number')" style="color:${d.sisaTransSama<10000000?'var(--yellow)':'var(--text2)'}">
+        <span class="ev">${fFull(d.sisaTransSama)}</span>
+        <span class="edit-hint">✏️ klik edit</span>
+      </td>
+      <td style="font-size:11px;color:var(--text3)">${d.sumber}</td>
+      <td><button class="bd" onclick="delBank(${ri})">Hapus</button></td>
+    </tr>`;
+  }).join('');
+}
+
+let _editCancelled=false;
+
+function startEdit(td, ri, field, type){
+  if(td.querySelector('.edit-input'))return;
+  const d=rD[ri];
+  const curVal=d[field];
+  // Build input element via DOM (avoids HTML escaping issues)
+  const inp=document.createElement('input');
+  inp.className='edit-input';
+  inp.type=type==='number'?'number':'text';
+  inp.value=curVal;
+  inp.autocomplete='off';
+  const hint=document.createElement('span');
+  hint.className='edit-hint';
+  hint.textContent='Enter simpan  •  Esc batal';
+  td.innerHTML='';
+  td.appendChild(inp);
+  td.appendChild(hint);
+
+  inp.focus();
+  inp.select();
+
+  inp.addEventListener('keydown',function(e){
+    if(e.key==='Enter'){
+      e.preventDefault();
+      e.stopPropagation();
+      _editCancelled=false;
+      commitEdit(ri,field,type,inp);
+    }
+    if(e.key==='Escape'){
+      e.preventDefault();
+      e.stopPropagation();
+      _editCancelled=true;
+      rTbl(); // discard, just re-render
+    }
+  });
+
+  inp.addEventListener('blur',function(){
+    // Only auto-save on blur if not cancelled by Escape
+    if(!_editCancelled){
+      commitEdit(ri,field,type,inp);
+    }
+    _editCancelled=false;
+  });
+}
+
+function commitEdit(ri, field, type, inp){
+  const raw=(inp.value||'').toString().trim();
+  if(raw===''){rTbl();return;}
+  const newVal=type==='number'?pn(raw):raw;
+  rD[ri][field]=newVal;
+  if(field==='maxSaldo') rD[ri].sisaSaldo=newVal-rD[ri].saldo;
+  if(field==='sisaTransAntar') rD[ri].maxTransAntar=newVal;
+  if(field==='sisaTransSama')  rD[ri].maxTransSama=newVal;
+  // Re-render only table (keep filters) + update charts/KPI silently
+  rTbl();
+  rKPI();
+  rStrip();
+  rCharts();
+  ts();
+}
+
+function rTxn(){
+  const todayStr=getTodayWIB().split('-').reverse().join('/'); // DD/MM/YYYY
+  const todayData=tD.filter(d=>d.tanggal===todayStr);
+  document.getElementById('txn-cnt').textContent=`${todayData.length} transaksi hari ini`;
+  const tb=document.getElementById('tx-body');
+  if(!todayData.length){
+    tb.innerHTML='<tr><td colspan="8" style="text-align:center;padding:30px;color:var(--text3)">Belum ada transaksi hari ini. Klik "+ Input Transaksi" untuk menambah.</td></tr>';
+    return;
+  }
+  tb.innerHTML=todayData.map((d,i)=>{
+    const realIdx=tD.indexOf(d);
+    return `<tr>
+    <td class="mn" style="color:var(--text3)">${i+1}</td>
+    <td class="mn">${d.tanggal}</td>
+    <td style="font-size:12px;color:var(--text2)">${d.rekening}</td>
+    <td><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${d.jenis==='Masuk'?'var(--green)':'var(--red)'};margin-right:5px"></span><span style="color:${d.jenis==='Masuk'?'var(--green)':'var(--red)'};font-weight:600">${d.jenis}</span></td>
+    <td style="color:var(--text2);font-size:12px">${d.transfer}</td>
+    <td class="mn" style="color:${d.jenis==='Masuk'?'var(--green)':'var(--red)'};font-weight:600">${d.jenis==='Masuk'?'+':'−'}${fFull(d.jumlah)}</td>
+    <td class="mn" style="color:var(--text3)">${d.fee?fFull(d.fee):'–'}</td>
+    <td><button class="bd" onclick="delTxn(${realIdx})">Hapus</button></td>
+  </tr>`;}).join('');
+}
+
+function addBank(){
+  const bk=(document.getElementById('nb-bk').value||'').trim();
+  const nm=(document.getElementById('nb-nm').value||'').trim();
+  if(!nm){alert('Nama Rekening wajib diisi.');return;}
+  const newAt=pn(document.getElementById('nb-at').value);
+  const newSm=pn(document.getElementById('nb-sm').value);
+  const nbSt=document.getElementById('nb-st').value;
+  const nbTy=document.getElementById('nb-ty').value;
+  const nbAg=document.getElementById('nb-ag').value;
+  const nbSb=document.getElementById('nb-sb').value;
+  if(!bk||bk==='__new__'){alert('Pilih atau tambah Bank terlebih dahulu.');return;}
+  if(!nbAg||nbAg==='__new__'){alert('Pilih atau tambah Agent terlebih dahulu.');return;}
+  if(!nbSb||nbSb==='__new__'){alert('Pilih atau tambah Sumber terlebih dahulu.');return;}
+  rD.push({status:nbSt,bank:bk,nama:nm,nomor:document.getElementById('nb-no').value,type:nbTy,agent:nbAg,sumber:nbSb,maxSaldo:pn(document.getElementById('nb-mx').value),saldo:pn(document.getElementById('nb-sl').value),sisaSaldo:pn(document.getElementById('nb-mx').value)-pn(document.getElementById('nb-sl').value),sisaTransAntar:newAt,sisaTransSama:newSm,maxTransAntar:newAt,maxTransSama:newSm,lastResetDate:getTodayWIB()});
+  ['nb-nm','nb-no','nb-mx','nb-sl','nb-at','nb-sm'].forEach(id=>document.getElementById(id).value='');
+  // Reset dropdowns to first option
+  ddBuildSelect(document.getElementById('nb-bk'),'bank');
+  ddBuildSelect(document.getElementById('nb-ag'),'agent');
+  ddBuildSelect(document.getElementById('nb-sb'),'sumber');
+  all();ts();
+}
+
+function addTxn(){
+  const rek=document.getElementById('tx-rek').value;
+  const jml=pn(document.getElementById('tx-jml').value);
+  const jen=document.getElementById('tx-jen').value;
+  const tr=document.getElementById('tx-tr').value;
+  const fee=pn(document.getElementById('tx-fee').value);
+  if(!rek||!jml){alert('Rekening dan Jumlah wajib diisi.');return;}
+
+  const matched=rD.find(d=>(d.bank+' '+d.nama+' '+d.nomor)===rek);
+  if(matched){
+    if(jen==='Masuk'){
+      // Uang masuk: saldo bertambah, tidak kena fee & tidak potong limit transfer
+      matched.saldo+=jml;
+    } else {
+      // Uang keluar: saldo berkurang sejumlah (jml + fee)
+      const totalKeluar=jml+fee;
+      matched.saldo=Math.max(0, matched.saldo-totalKeluar);
+      // Limit transfer berkurang sejumlah (jml + fee)
+      if(tr==='Antar Bank') matched.sisaTransAntar=Math.max(0, matched.sisaTransAntar-totalKeluar);
+      else matched.sisaTransSama=Math.max(0, matched.sisaTransSama-totalKeluar);
+    }
+    matched.sisaSaldo=matched.maxSaldo-matched.saldo;
+  }
+
+  tD.unshift({
+    tanggal:document.getElementById('tx-tgl').value.split('-').reverse().join('/'),
+    rekening:rek, jenis:jen, transfer:tr, jumlah:jml, fee:fee
+  });
+  document.getElementById('tx-jml').value='';
+  document.getElementById('tx-fee').value='';
+  rTxn();
+  // Preserve current filter — update data silently, re-render table only
+  pFilt();rKPI();rStrip();rCharts();rTbl();pHistFilt();
+  ts();
+}
+
+function delBank(i){if(confirm('Hapus rekening ini?')){rD.splice(i,1);all();}}
+function delTxn(i){
+  if(!confirm('Hapus transaksi ini?'))return;
+  const d=tD[i];
+  const matched=rD.find(r=>(r.bank+' '+r.nama+' '+r.nomor)===d.rekening);
+  if(matched){
+    if(d.jenis==='Masuk'){
+      // Balik: kurangi saldo yang tadi ditambah
+      matched.saldo=Math.max(0, matched.saldo-d.jumlah);
+    } else {
+      // Balik: kembalikan saldo + fee yang tadi dikurangi
+      const totalKeluar=d.jumlah+(d.fee||0);
+      matched.saldo+=totalKeluar;
+      if(d.transfer==='Antar Bank') matched.sisaTransAntar+=totalKeluar;
+      else matched.sisaTransSama+=totalKeluar;
+    }
+    matched.sisaSaldo=matched.maxSaldo-matched.saldo;
+  }
+  tD.splice(i,1);
+  rTxn();
+  pFilt();rKPI();rStrip();rCharts();rTbl();pHistFilt();
+}
+function ts(){document.getElementById('last-up').textContent='⏱ '+new Date().toLocaleTimeString('id-ID');}
+function all(){pFilt();rKPI();rStrip();rCharts();rTbl();pHistFilt();}
+
+window.addEventListener('DOMContentLoaded',()=>{
+  rD=[
+    {status:'Active',sumber:'Internal',type:'Tampungan',bank:'BCA',nama:'DEVIANI',nomor:'2770659275',agent:'3DGENZ',maxSaldo:50000000,saldo:51247107,sisaSaldo:-1247107,sisaTransAntar:145094500,sisaTransSama:488000000},
+    {status:'Active',sumber:'Internal',type:'Tampungan',bank:'BCA',nama:'HENDRI',nomor:'2770479498',agent:'SBO',maxSaldo:50000000,saldo:31152821,sisaSaldo:18847179,sisaTransAntar:150000000,sisaTransSama:500000000},
+    {status:'Active',sumber:'Internal',type:'Tampungan',bank:'BCA',nama:'ERIS CIUTAMA',nomor:'4770134124',agent:'SBO',maxSaldo:50000000,saldo:20440305,sisaSaldo:29559695,sisaTransAntar:150000000,sisaTransSama:500000000},
+    {status:'Active',sumber:'Internal',type:'Tampungan',bank:'BCA',nama:'ZETLAND',nomor:'8200862407',agent:'3DGENZ',maxSaldo:25000000,saldo:1990870,sisaSaldo:23009130,sisaTransAntar:30000000,sisaTransSama:100000000},
+    {status:'Inkubasi',sumber:'Internal',type:'Tampungan',bank:'BCA',nama:'IBADI RAHMI',nomor:'5810819288',agent:'3DBET',maxSaldo:50000000,saldo:2216519,sisaSaldo:47783481,sisaTransAntar:150000000,sisaTransSama:500000000},
+    {status:'Active',sumber:'Internal',type:'Tampungan',bank:'BCA',nama:'HERNAWATY',nomor:'8200862415',agent:'3DBET',maxSaldo:50000000,saldo:156003,sisaSaldo:49843997,sisaTransAntar:30000000,sisaTransSama:100000000},
+    {status:'Active',sumber:'Internal',type:'Tampungan',bank:'BCA',nama:'ULYARTA BR TAMBA',nomor:'8200825641',agent:'3DBET',maxSaldo:50000000,saldo:497303,sisaSaldo:49502697,sisaTransAntar:150000000,sisaTransSama:500000000},
+    {status:'Active',sumber:'Internal',type:'Tampungan',bank:'BCA',nama:'RICARDO T',nomor:'6300336793',agent:'SBO',maxSaldo:50000000,saldo:24023530,sisaSaldo:25976470,sisaTransAntar:150000000,sisaTransSama:500000000},
+    {status:'Active',sumber:'Internal',type:'Tampungan',bank:'BCA',nama:'ASNITA N T',nomor:'6300336751',agent:'3DBET',maxSaldo:50000000,saldo:9129259,sisaSaldo:40870741,sisaTransAntar:150000000,sisaTransSama:500000000},
+    {status:'Blokir',sumber:'Erwin',type:'Kotor',bank:'BCA',nama:'AHMAD FAUZI',nomor:'0232041771',agent:'3DBET',maxSaldo:10000000,saldo:1000,sisaSaldo:9999000,sisaTransAntar:30000000,sisaTransSama:100000000},
+    {status:'Active',sumber:'Internal',type:'Tampungan',bank:'BCA',nama:'REZA DWIPUTRA',nomor:'3452313101',agent:'3DBET',maxSaldo:50000000,saldo:2497186,sisaSaldo:47502814,sisaTransAntar:150000000,sisaTransSama:100000000},
+    {status:'Active',sumber:'WW',type:'Bersih',bank:'BCA',nama:'NINA KUSNIAWATI',nomor:'5665081611',agent:'SBO',maxSaldo:25000000,saldo:222788,sisaSaldo:24777212,sisaTransAntar:100000000,sisaTransSama:100000000},
+    {status:'Active',sumber:'WW',type:'Wd SBO',bank:'BCA',nama:'MAYA NOVITA SARI',nomor:'7651847668',agent:'3DBET',maxSaldo:5000000,saldo:624865,sisaSaldo:4375135,sisaTransAntar:150000000,sisaTransSama:100000000},
+    {status:'Inkubasi',sumber:'WW',type:'Dp SBO',bank:'BCA',nama:'MUHAMAD SALEH SUKARTA',nomor:'7651847480',agent:'SBO',maxSaldo:5000000,saldo:1000,sisaSaldo:4999000,sisaTransAntar:150000000,sisaTransSama:100000000},
+    {status:'Active',sumber:'WW',type:'Wd SBO',bank:'BCA',nama:'IING ABDURROHIM',nomor:'5222360218',agent:'3DBET',maxSaldo:5000000,saldo:180333,sisaSaldo:4819667,sisaTransAntar:150000000,sisaTransSama:100000000},
+    {status:'Active',sumber:'WW',type:'Wd 3Dgenz',bank:'BCA',nama:'YANTI YAHYA',nomor:'5370552756',agent:'3DGENZ',maxSaldo:5000000,saldo:67287,sisaSaldo:4932713,sisaTransAntar:150000000,sisaTransSama:100000000},
+    {status:'Active',sumber:'Internal',type:'Tampungan',bank:'BCA',nama:'SUYANDI',nomor:'4080180085',agent:'3DGENZ',maxSaldo:50000000,saldo:1000,sisaSaldo:49999000,sisaTransAntar:150000000,sisaTransSama:500000000},
+    {status:'Active',sumber:'WW',type:'Bersih',bank:'BCA',nama:'SRI PUJI ASTUTI',nomor:'7651847692',agent:'SBO',maxSaldo:25000000,saldo:201282,sisaSaldo:24798718,sisaTransAntar:150000000,sisaTransSama:100000000},
+    {status:'Blokir',sumber:'WW',type:'Bersih',bank:'BCA',nama:'NILAM RAHMASARI',nomor:'5370552730',agent:'3DBET',maxSaldo:25000000,saldo:768168,sisaSaldo:24231832,sisaTransAntar:150000000,sisaTransSama:100000000},
+    {status:'Blokir',sumber:'WW',type:'Bersih',bank:'BCA',nama:'IRFAN MAULANA',nomor:'2740606738',agent:'SBO',maxSaldo:25000000,saldo:252066,sisaSaldo:24747934,sisaTransAntar:150000000,sisaTransSama:100000000},
+    {status:'Active',sumber:'Internal',type:'Tampungan',bank:'BCA',nama:'CV TAMPURUNG JAYA U 2',nomor:'5493888977',agent:'Rek CV',maxSaldo:150000000,saldo:24341835,sisaSaldo:125658165,sisaTransAntar:500000000,sisaTransSama:500000000},
+    {status:'Active',sumber:'Internal',type:'Tampungan',bank:'BCA',nama:'CV SEJAHTERA LENTERA U',nomor:'3190250732',agent:'Rek CV',maxSaldo:150000000,saldo:62722687,sisaSaldo:87277313,sisaTransAntar:500000000,sisaTransSama:500000000},
+    {status:'Active',sumber:'Internal',type:'Tampungan',bank:'Mandiri',nama:'HENDRI',nomor:'1170010356244',agent:'3DBET, SBO',maxSaldo:50000000,saldo:298131,sisaSaldo:49701869,sisaTransAntar:150000000,sisaTransSama:200000000},
+    {status:'Active',sumber:'Internal',type:'Tampungan',bank:'Mandiri',nama:'ERIS CIUTAMA',nomor:'1170010354041',agent:'3DBET, SBO',maxSaldo:50000000,saldo:29378673,sisaSaldo:20621327,sisaTransAntar:150000000,sisaTransSama:200000000},
+    {status:'Active',sumber:'Internal',type:'Tampungan',bank:'Mandiri',nama:'ZETLAND',nomor:'1070017802499',agent:'3DGENZ',maxSaldo:50000000,saldo:886852,sisaSaldo:49113148,sisaTransAntar:150000000,sisaTransSama:200000000},
+    {status:'Active',sumber:'Internal',type:'Tampungan',bank:'Mandiri',nama:'SUYANDI',nomor:'1190007987520',agent:'3DGENZ',maxSaldo:50000000,saldo:567104,sisaSaldo:49432896,sisaTransAntar:150000000,sisaTransSama:200000000},
+    {status:'Active',sumber:'WW',type:'Kotor',bank:'Mandiri',nama:'REZA CHAIRIL BINTANG',nomor:'1330029710357',agent:'3DBET, SBO',maxSaldo:10000000,saldo:5160560,sisaSaldo:4839440,sisaTransAntar:150000000,sisaTransSama:200000000},
+    {status:'Active',sumber:'Internal',type:'Tampungan',bank:'BNI',nama:'DEVIANI TANIYAH',nomor:'1493767706',agent:'3DGENZ',maxSaldo:50000000,saldo:445118,sisaSaldo:49554882,sisaTransAntar:200000000,sisaTransSama:200000000},
+    {status:'Active',sumber:'Internal',type:'Tampungan',bank:'BNI',nama:'HENDRI',nomor:'1493762800',agent:'3DBET, SBO',maxSaldo:50000000,saldo:2696440,sisaSaldo:47303560,sisaTransAntar:200000000,sisaTransSama:200000000},
+    {status:'Active',sumber:'Internal',type:'Tampungan',bank:'BNI',nama:'ERIS CIUTAMA',nomor:'1498315697',agent:'3DBET, SBO',maxSaldo:50000000,saldo:11840065,sisaSaldo:38159935,sisaTransAntar:200000000,sisaTransSama:200000000},
+    {status:'Active',sumber:'Internal',type:'Tampungan',bank:'BNI',nama:'ZETLAND',nomor:'1341857277',agent:'3DGENZ',maxSaldo:50000000,saldo:1178092,sisaSaldo:48821908,sisaTransAntar:200000000,sisaTransSama:200000000},
+    {status:'Inkubasi',sumber:'Internal',type:'Kotor',bank:'BNI',nama:'DENI IRAWAN',nomor:'1881173563',agent:'3DBET',maxSaldo:5000000,saldo:1000,sisaSaldo:4999000,sisaTransAntar:200000000,sisaTransSama:200000000},
+    {status:'Active',sumber:'WW',type:'Wd SBO',bank:'BNI',nama:'JULHEFNI',nomor:'1892061708',agent:'3DGENZ',maxSaldo:30000000,saldo:442026,sisaSaldo:29557974,sisaTransAntar:200000000,sisaTransSama:200000000},
+    {status:'Active',sumber:'WW',type:'Kotor',bank:'BNI',nama:'IFANDA',nomor:'1914739015',agent:'SBO',maxSaldo:30000000,saldo:9846039,sisaSaldo:20153961,sisaTransAntar:200000000,sisaTransSama:200000000},
+    {status:'Active',sumber:'Internal',type:'Tampungan',bank:'BRI',nama:'DEVIANI TANIYAH',nomor:'041801001133566',agent:'3DGENZ',maxSaldo:50000000,saldo:574666,sisaSaldo:49425334,sisaTransAntar:100000000,sisaTransSama:200000000},
+    {status:'Active',sumber:'Internal',type:'Tampungan',bank:'BRI',nama:'ERIS CIUTAMA',nomor:'037901001353568',agent:'SBO',maxSaldo:50000000,saldo:20542940,sisaSaldo:29457060,sisaTransAntar:100000000,sisaTransSama:200000000},
+    {status:'Active',sumber:'Internal',type:'Tampungan',bank:'BRI',nama:'HENDRI',nomor:'041801001135568',agent:'SBO',maxSaldo:50000000,saldo:163617,sisaSaldo:49836383,sisaTransAntar:100000000,sisaTransSama:200000000},
+    {status:'Active',sumber:'Internal',type:'Tampungan',bank:'BRI',nama:'IBADI RAHMI',nomor:'117201000740561',agent:'–',maxSaldo:50000000,saldo:16930406,sisaSaldo:33069594,sisaTransAntar:100000000,sisaTransSama:200000000},
+    {status:'Active',sumber:'Internal',type:'Tampungan',bank:'BRI',nama:'HERNAWATY',nomor:'538701033567531',agent:'3DBET',maxSaldo:50000000,saldo:7074739,sisaSaldo:42925261,sisaTransAntar:100000000,sisaTransSama:200000000},
+    {status:'Active',sumber:'Internal',type:'Tampungan',bank:'BRI',nama:'SUYANDI',nomor:'037901001352562',agent:'3DGENZ',maxSaldo:50000000,saldo:318745,sisaSaldo:49681255,sisaTransAntar:100000000,sisaTransSama:200000000},
+    {status:'Active',sumber:'Internal',type:'Tampungan',bank:'BRI',nama:'REZA DWIPUTRA',nomor:'711101010002505',agent:'3DBET',maxSaldo:10000000,saldo:410871,sisaSaldo:9589129,sisaTransAntar:100000000,sisaTransSama:200000000},
+    {status:'Inkubasi',sumber:'Erwin',type:'Kotor',bank:'BRI',nama:'DENI IRAWAN',nomor:'207701007407537',agent:'SBO',maxSaldo:30000000,saldo:1000,sisaSaldo:29999000,sisaTransAntar:100000000,sisaTransSama:200000000},
+    {status:'In Active',sumber:'Erwin',type:'Kotor',bank:'BRI',nama:'AHMAD FAUZI',nomor:'009801183033503',agent:'3DBET',maxSaldo:30000000,saldo:1000,sisaSaldo:29999000,sisaTransAntar:100000000,sisaTransSama:200000000},
+  ];
+  tD=[
+    {tanggal:'17/05/2026',rekening:'BCA DEVIANI 2770659275',jenis:'Masuk',transfer:'Sesama Bank',jumlah:1000000,fee:0},
+    {tanggal:'17/05/2026',rekening:'BCA DEVIANI 2770659275',jenis:'Masuk',transfer:'Antar Bank',jumlah:800000,fee:0},
+    {tanggal:'17/05/2026',rekening:'BCA DEVIANI 2770659275',jenis:'Masuk',transfer:'Sesama Bank',jumlah:150000000,fee:0},
+    {tanggal:'18/05/2026',rekening:'BCA DEVIANI 2770659275',jenis:'Keluar',transfer:'Sesama Bank',jumlah:10000000,fee:0},
+    {tanggal:'18/05/2026',rekening:'BCA DEVIANI 2770659275',jenis:'Keluar',transfer:'Antar Bank',jumlah:50000000,fee:6500},
+    {tanggal:'19/05/2026',rekening:'BCA DEVIANI 2770659275',jenis:'Masuk',transfer:'Sesama Bank',jumlah:15000000,fee:0},
+    {tanggal:'19/05/2026',rekening:'BCA DEVIANI 2770659275',jenis:'Keluar',transfer:'Antar Bank',jumlah:4899000,fee:6500},
+  ];
+  // Set maxTransAntar & maxTransSama from initial sisaTrans values (as daily limit baseline)
+  const todayWIB=getTodayWIB();
+  rD.forEach(d=>{
+    if(!d.maxTransAntar) d.maxTransAntar=d.sisaTransAntar;
+    if(!d.maxTransSama)  d.maxTransSama=d.sisaTransSama;
+    if(!d.lastResetDate) d.lastResetDate=todayWIB;
+  });
+  all();rTxn();
+  pHistFilt();
+  resetHist();
+  startDailyResetWatcher();
+  initDDLists();
+  document.getElementById('last-up').textContent='⏱ Data bawaan';
+});
+
+// ── HISTORY TRANSAKSI ──
+function parseDate(str){
+  // str format: DD/MM/YYYY
+  if(!str)return null;
+  const p=str.split('/');
+  if(p.length===3)return new Date(p[2],p[1]-1,p[0]);
+  return null;
+}
+function toDateVal(inputVal){
+  // input type=date gives YYYY-MM-DD
+  if(!inputVal)return null;
+  const p=inputVal.split('-');
+  return new Date(p[0],p[1]-1,p[2]);
+}
+
+function pHistFilt(){
+  const banks=[...new Set(rD.map(d=>d.bank).filter(Boolean))].sort();
+  const hb=document.getElementById('h-bank');
+  const cur=hb.value;
+  hb.innerHTML='<option value="">Semua Bank</option>';
+  banks.forEach(b=>hb.innerHTML+=`<option value="${b}">${b}</option>`);
+  hb.value=cur;
+  document.getElementById('h-bank').addEventListener('change', syncRekFilt);
+  syncRekFilt();
+}
+
+function syncRekFilt(){
+  const bk=document.getElementById('h-bank').value;
+  const data=bk?rD.filter(d=>d.bank===bk):rD;
+  const hr=document.getElementById('h-rek');
+  const cur=hr.value;
+  hr.innerHTML='<option value="">Semua Rekening</option>';
+  data.forEach(d=>hr.innerHTML+=`<option value="${d.bank} ${d.nama} ${d.nomor}">${d.bank} — ${d.nama} (${d.nomor})</option>`);
+  hr.value=cur;
+}
+
+function rHist(){
+  const dari=toDateVal(document.getElementById('h-dari').value);
+  const sampai=toDateVal(document.getElementById('h-sampai').value);
+  const bk=document.getElementById('h-bank').value;
+  const rek=document.getElementById('h-rek').value;
+  const jen=document.getElementById('h-jenis').value;
+
+  let fd=tD.filter(d=>{
+    const dt=parseDate(d.tanggal);
+    if(dari && dt && dt<dari)return false;
+    if(sampai && dt && dt>sampai)return false;
+    if(jen && d.jenis!==jen)return false;
+    if(rek && d.rekening!==rek)return false;
+    // filter bank: cek prefix rekening
+    if(bk && !d.rekening.startsWith(bk))return false;
+    return true;
+  });
+
+  // sort terbaru dulu
+  fd=[...fd].sort((a,b)=>{
+    const da=parseDate(a.tanggal),db=parseDate(b.tanggal);
+    return (db||0)-(da||0);
+  });
+
+  document.getElementById('hist-cnt').textContent=`${fd.length} transaksi ditemukan`;
+
+  // Summary
+  const totalIn=fd.filter(d=>d.jenis==='Masuk').reduce((s,d)=>s+d.jumlah,0);
+  const totalOut=fd.filter(d=>d.jenis==='Keluar').reduce((s,d)=>s+d.jumlah,0);
+  const totalFee=fd.reduce((s,d)=>s+(d.fee||0),0);
+  const net=totalIn-totalOut;
+  const sumEl=document.getElementById('hist-sum');
+  sumEl.style.display='flex';
+  sumEl.innerHTML=`
+    <div style="display:flex;align-items:center;gap:8px;background:rgba(16,185,129,.1);border:1px solid rgba(16,185,129,.2);border-radius:8px;padding:8px 14px">
+      <span style="font-size:11px;color:var(--text2);font-weight:600;text-transform:uppercase">Total Masuk</span>
+      <span style="font-family:'DM Mono',monospace;font-size:15px;font-weight:800;color:var(--green)">+${fFull(totalIn)}</span>
+    </div>
+    <div style="display:flex;align-items:center;gap:8px;background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.2);border-radius:8px;padding:8px 14px">
+      <span style="font-size:11px;color:var(--text2);font-weight:600;text-transform:uppercase">Total Keluar</span>
+      <span style="font-family:'DM Mono',monospace;font-size:15px;font-weight:800;color:var(--red)">−${fFull(totalOut)}</span>
+    </div>
+    <div style="display:flex;align-items:center;gap:8px;background:rgba(59,130,246,.1);border:1px solid rgba(59,130,246,.2);border-radius:8px;padding:8px 14px">
+      <span style="font-size:11px;color:var(--text2);font-weight:600;text-transform:uppercase">Net</span>
+      <span style="font-family:'DM Mono',monospace;font-size:15px;font-weight:800;color:${net>=0?'var(--green)':'var(--red)'}">${net>=0?'+':''}${fFull(net)}</span>
+    </div>
+    <div style="display:flex;align-items:center;gap:8px;background:rgba(100,116,139,.1);border:1px solid rgba(100,116,139,.2);border-radius:8px;padding:8px 14px">
+      <span style="font-size:11px;color:var(--text2);font-weight:600;text-transform:uppercase">Total Fee</span>
+      <span style="font-family:'DM Mono',monospace;font-size:15px;font-weight:800;color:var(--text2)">${fFull(totalFee)}</span>
+    </div>
+    <div style="display:flex;align-items:center;gap:8px;background:rgba(139,92,246,.1);border:1px solid rgba(139,92,246,.2);border-radius:8px;padding:8px 14px">
+      <span style="font-size:11px;color:var(--text2);font-weight:600;text-transform:uppercase">Jumlah Transaksi</span>
+      <span style="font-family:'DM Mono',monospace;font-size:15px;font-weight:800;color:#c4b5fd">${fd.length}x</span>
+    </div>`;
+
+  const tb=document.getElementById('hist-body');
+  if(!fd.length){
+    tb.innerHTML='<tr><td colspan="8" style="text-align:center;padding:40px;color:var(--text3)">Tidak ada transaksi pada filter ini</td></tr>';
+    return;
+  }
+
+  tb.innerHTML=fd.map((d,i)=>{
+    // extract bank & nama from rekening string "BCA NAMA 12345"
+    const parts=d.rekening.split(' ');
+    const bankLabel=parts[0]||'';
+    const namaLabel=parts.slice(1,-1).join(' ')||d.rekening;
+    const bCls={BCA:'bca',Mandiri:'mdr',BNI:'bni',BRI:'bri'}[bankLabel]||'oth';
+    return `<tr>
+      <td class="mn" style="color:var(--text3)">${i+1}</td>
+      <td class="mn" style="color:var(--text2)">${d.tanggal}</td>
+      <td><span class="bt ${bCls}">${bankLabel}</span></td>
+      <td style="font-size:12px;font-weight:600">${namaLabel}</td>
+      <td><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${d.jenis==='Masuk'?'var(--green)':'var(--red)'};margin-right:5px"></span><span style="color:${d.jenis==='Masuk'?'var(--green)':'var(--red)'};font-weight:600">${d.jenis}</span></td>
+      <td style="color:var(--text2);font-size:12px">${d.transfer}</td>
+      <td class="mn" style="color:${d.jenis==='Masuk'?'var(--green)':'var(--red)'};font-weight:700">${d.jenis==='Masuk'?'+':'−'}${fFull(d.jumlah)}</td>
+      <td class="mn" style="color:var(--text3)">${d.fee?fFull(d.fee):'–'}</td>
+    </tr>`;
+  }).join('');
+}
+
+function resetHist(){
+  document.getElementById('h-dari').value='';
+  document.getElementById('h-sampai').value='';
+  document.getElementById('h-bank').value='';
+  document.getElementById('h-jenis').value='';
+  syncRekFilt();
+  document.getElementById('h-rek').value='';
+  document.getElementById('hist-body').innerHTML='<tr><td colspan="8" style="text-align:center;padding:40px;color:var(--text3)">Gunakan filter di atas lalu klik Cari</td></tr>';
+  document.getElementById('hist-sum').style.display='none';
+  document.getElementById('hist-cnt').textContent='';
+}
+
+
+// ── DAILY RESET LOGIC (Cut-off 00:00 WIB = UTC+7) ──
+function getTodayWIB(){
+  // Returns 'YYYY-MM-DD' in WIB (UTC+7)
+  const now=new Date();
+  const wib=new Date(now.getTime()+(7*60*60*1000));
+  return wib.toISOString().slice(0,10);
+}
+
+function getMidnightWIBMs(){
+  // Milliseconds until next 00:00:00 WIB
+  const now=new Date();
+  const wibNow=new Date(now.getTime()+(7*60*60*1000));
+  const wibMidnight=new Date(wibNow);
+  wibMidnight.setUTCHours(17,0,0,0); // 17:00 UTC = 00:00 WIB next day
+  if(wibMidnight<=wibNow) wibMidnight.setUTCDate(wibMidnight.getUTCDate()+1);
+  return wibMidnight.getTime()-now.getTime();
+}
+
+function doResetLimits(){
+  setTodayInput(); // update locked date to new day
+  const todayWIB=getTodayWIB();
+  let resetCount=0;
+  rD.forEach(d=>{
+    if(d.lastResetDate!==todayWIB){
+      d.sisaTransAntar=d.maxTransAntar||d.sisaTransAntar;
+      d.sisaTransSama=d.maxTransSama||d.sisaTransSama;
+      d.lastResetDate=todayWIB;
+      resetCount++;
+    }
+  });
+  if(resetCount>0){
+    all();
+    showResetToast(resetCount);
+  }
+}
+
+function showResetToast(n){
+  const t=document.createElement('div');
+  t.innerHTML=`🔄 Reset harian dijalankan — limit transfer ${n} rekening dikembalikan ke awal (cut-off 00:00 WIB)`;
+  t.style.cssText='position:fixed;bottom:28px;right:28px;z-index:9999;background:linear-gradient(135deg,#1e2840,#2a3550);border:1px solid #3b82f6;color:#e8edf5;padding:14px 20px;border-radius:12px;font-size:13px;font-weight:600;box-shadow:0 8px 32px rgba(0,0,0,.4);max-width:380px;line-height:1.5;transition:opacity .4s';
+  document.body.appendChild(t);
+  setTimeout(()=>{t.style.opacity='0';setTimeout(()=>t.remove(),400);},5000);
+}
+
+function startDailyResetWatcher(){
+  // Check on load if day has changed
+  doResetLimits();
+  // Schedule exact midnight WIB reset
+  function scheduleNext(){
+    const ms=getMidnightWIBMs();
+    setTimeout(()=>{doResetLimits();scheduleNext();},ms);
+  }
+  scheduleNext();
+  // Also check every 60s as safety net
+  setInterval(doResetLimits,60000);
+}
+
+// maxTrans baseline update is now handled inside commitEdit
+
+
+// ── SMART DROPDOWN — TAMBAH OPSI BARU ──
+// Master lists (persisted per session)
+const ddLists = {
+  status:  ['Active','Inkubasi','Blokir','In Active'],
+  bank:    ['BCA','Mandiri','BNI','BRI'],
+  type:    ['Tampungan','Bersih','Kotor','Wd SBO','Dp SBO','Wd 3Dgenz'],
+  agent:   [],
+  sumber:  ['Internal','WW','Erwin'],
+};
+
+let _ddTarget=null; // { selEl, field }
+
+const DD_LABELS={status:'Status',bank:'Bank',type:'Type',agent:'Agent',sumber:'Sumber'};
+const DD_PH={status:'Pilih status...',bank:'Pilih bank...',type:'Pilih type...',agent:'Pilih agent...',sumber:'Pilih sumber...'};
+
+// Fields that show a real default (no empty placeholder)
+const DD_NO_PH=[]; // semua field pakai placeholder
+
+function ddBuildSelect(selEl, field){
+  const cur=(selEl.value==='__new__'||selEl.value==='__del__')?'':selEl.value;
+  selEl.innerHTML='';
+
+  // Only show placeholder for fields that need one
+  if(!DD_NO_PH.includes(field)){
+    const ph=document.createElement('option');
+    ph.value=''; ph.textContent=DD_PH[field]||`Pilih ${field}...`;
+    selEl.appendChild(ph);
+  }
+
+  // Determine what to select: current value, or first item as default
+  const defaultVal = DD_NO_PH.includes(field) ? (cur || ddLists[field][0] || '') : cur;
+
+  ddLists[field].forEach(opt=>{
+    const o=document.createElement('option');
+    o.value=opt; o.textContent=opt;
+    if(opt===defaultVal) o.selected=true;
+    selEl.appendChild(o);
+  });
+
+  // Divider-like separator
+  const sep=document.createElement('option');
+  sep.disabled=true; sep.textContent='──────────';
+  selEl.appendChild(sep);
+
+  const addOpt=document.createElement('option');
+  addOpt.value='__new__'; addOpt.textContent='➕ Tambah baru...';
+  selEl.appendChild(addOpt);
+
+  const delOpt=document.createElement('option');
+  delOpt.value='__del__'; delOpt.textContent='🗑 Hapus opsi...';
+  selEl.appendChild(delOpt);
+}
+
+function ddNew(selEl, field){
+  const v=selEl.value;
+  if(v!=='__new__'&&v!=='__del__') return;
+  _ddTarget={selEl, field};
+  document.getElementById('dd-modal-title').textContent=`Kelola ${DD_LABELS[field]}`;
+  document.getElementById('dd-modal-sub').textContent=`Masukkan nama ${DD_LABELS[field]} baru, lalu klik Simpan`;
+  document.getElementById('dd-modal-input').value='';
+  document.getElementById('dd-modal').classList.add('open');
+  if(v==='__del__'){
+    ddTab('del');
+  } else {
+    ddTab('add');
+  }
+}
+
+function ddTab(mode){
+  const isAdd=mode==='add';
+  document.getElementById('dd-panel-add').style.display=isAdd?'block':'none';
+  document.getElementById('dd-panel-del').style.display=isAdd?'none':'block';
+  document.getElementById('dd-tab-add').className=isAdd?'bp':'bs';
+  document.getElementById('dd-tab-add').style.cssText='flex:1;font-size:12px;padding:7px';
+  document.getElementById('dd-tab-del').className=isAdd?'bs':'bp';
+  document.getElementById('dd-tab-del').style.cssText='flex:1;font-size:12px;padding:7px';
+  if(isAdd){
+    setTimeout(()=>document.getElementById('dd-modal-input').focus(),80);
+  } else {
+    ddRenderDelList();
+  }
+}
+
+function ddRenderDelList(){
+  if(!_ddTarget) return;
+  const {field}=_ddTarget;
+  const list=document.getElementById('dd-del-list');
+  list.innerHTML='';
+  if(!ddLists[field].length){
+    list.innerHTML='<div style="text-align:center;padding:20px;color:var(--text3);font-size:13px">Tidak ada opsi untuk dihapus</div>';
+    return;
+  }
+  ddLists[field].forEach((opt,i)=>{
+    const row=document.createElement('div');
+    row.style.cssText='display:flex;align-items:center;justify-content:space-between;background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:9px 12px;';
+    row.innerHTML=`<span style="font-size:13px;font-weight:500">${opt}</span>
+      <button onclick="ddDelete('${field}',${i})" style="background:rgba(239,68,68,.15);color:var(--red);border:1px solid rgba(239,68,68,.25);padding:4px 12px;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit">Hapus</button>`;
+    list.appendChild(row);
+  });
+}
+
+function ddDelete(field, idx){
+  const opt=ddLists[field][idx];
+  if(!confirm(`Hapus opsi "${opt}" dari daftar ${DD_LABELS[field]}?`)) return;
+  ddLists[field].splice(idx,1);
+  // Rebuild selects
+  ['nb-st','nb-bk','nb-ty','nb-ag','nb-sb'].forEach(id=>{
+    const el=document.getElementById(id);
+    const f={"nb-st":'status','nb-bk':'bank','nb-ty':'type','nb-ag':'agent','nb-sb':'sumber'}[id];
+    ddBuildSelect(el,f);
+  });
+  ddRenderDelList();
+  if(field==='status') syncStatusFilter();
+  pFilt();
+}
+
+function ddSave(){
+  const val=(document.getElementById('dd-modal-input').value||'').trim();
+  if(!val){document.getElementById('dd-modal-input').focus();return;}
+  const {selEl,field}=_ddTarget;
+  if(!ddLists[field].includes(val)) ddLists[field].push(val);
+  ddBuildSelect(selEl,field);
+  selEl.value=val;
+  // sync other same-field selects
+  if(field==='status') syncStatusFilter();
+  if(field==='bank'){
+    ddBuildSelect(document.getElementById('nb-bk'),'bank');
+    document.getElementById('nb-bk').value=val;
+    pFilt();
+  }
+  if(field==='agent'){
+    ddBuildSelect(document.getElementById('nb-ag'),'agent');
+    document.getElementById('nb-ag').value=val;
+    pFilt();
+  }
+  ddCancel();
+}
+
+function ddCancel(){
+  document.getElementById('dd-modal').classList.remove('open');
+  if(_ddTarget) ddBuildSelect(_ddTarget.selEl,_ddTarget.field);
+  _ddTarget=null;
+}
+
+// Close modal on overlay click
+document.getElementById('dd-modal').addEventListener('click',function(e){
+  if(e.target===this) ddCancel();
+});
+
+// Init all smart dropdowns on page load
+function initDDLists(){
+  const agents=[...new Set(rD.flatMap(d=>d.agent.split(',').map(a=>a.trim())).filter(a=>a&&a!=='–'))];
+  agents.forEach(a=>{if(!ddLists.agent.includes(a))ddLists.agent.push(a);});
+  ddBuildSelect(document.getElementById('nb-st'),'status');
+  ddBuildSelect(document.getElementById('nb-bk'),'bank');
+  ddBuildSelect(document.getElementById('nb-ty'),'type');
+  ddBuildSelect(document.getElementById('nb-ag'),'agent');
+  ddBuildSelect(document.getElementById('nb-sb'),'sumber');
+  syncStatusFilter();
+}
+
+</script>
+</body>
+</html>
